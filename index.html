@@ -1,36 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Countdown Timer</title>
+  <title>Countdown Timer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #000;
+      color: #888; /* Gray text color */
+      padding: 20px;
+    }
+
+    h1 {
+      color: #fff;
+    }
+
+    .countdown-box {
+      border: 2px solid #fff;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #333;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .countdown {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 20px;
+      animation: countdown-fade-in 1s ease-in-out;
+    }
+
+    .support-link {
+      margin-top: 20px;
+      text-decoration: none;
+      color: #fff; /* White text color */
+      font-weight: bold;
+      font-size: 18px;
+      display: block;
+    }
+
+    @keyframes countdown-fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="countdown"></div>
 
-    <script>
-        // Set the target date and time
-        var targetDate = new Date("2023-10-10T18:00:00").getTime();
+<h1>CS2 Drop Reset Countdown</h1>
+<div class="countdown-box">
+  <div class="countdown" id="countdown"></div>
+</div>
 
-        // Update the countdown every 1 second
-        var countdownInterval = setInterval(function() {
-            var currentDate = new Date().getTime();
-            var timeLeft = targetDate - currentDate;
+<a href="https://steamcommunity.com/tradeoffer/new/?partner=1501053483&token=_cGqGc8U" class="support-link">Trade Link</a>
 
-            // Calculate days, hours, minutes, and seconds
-            var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+<script>
+// Function to calculate the time until the next Wednesday at 1:00 AM GMT
+function getTimeUntilNextWednesday() {
+  const now = new Date();
+  const currentDay = now.getUTCDay();
+  const daysUntilWednesday = (10 - currentDay + 7) % 7; // Calculate days until next Wednesday
+  const nextWednesday = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + daysUntilWednesday, 1, 0, 0, 0);
+  return nextWednesday - now;
+}
 
-            // Display the countdown
-            var countdownElement = document.getElementById("countdown");
-            countdownElement.innerHTML = "Countdown: " + days + " days " + hours + " hours " + minutes + " minutes " + seconds + " seconds ";
+// Function to format time in HH:MM:SS format
+function formatTime(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
 
-            // Check if the countdown has reached zero
-            if (timeLeft < 0) {
-                clearInterval(countdownInterval);
-                countdownElement.innerHTML = "Countdown expired!";
-            }
-        }, 1000); // Update every 1 second
-    </script>
+// Update the countdown every second
+const countdownElement = document.getElementById('countdown');
+let countdownInterval;
+
+function updateCountdown() {
+  const timeRemaining = getTimeUntilNextWednesday();
+
+  // Calculate days, hours, minutes, and seconds
+  const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+  // Display the countdown
+  countdownElement.innerHTML = `
+    ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds.
+  `;
+
+  // Check if the countdown is over
+  if (timeRemaining <= 0) {
+    clearInterval(countdownInterval);
+    countdownElement.innerHTML = 'Countdown expired.';
+  }
+}
+
+// Initial countdown update
+updateCountdown();
+
+// Start the countdown interval
+countdownInterval = setInterval(updateCountdown, 1000);
+</script>
+
 </body>
 </html>
