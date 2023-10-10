@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Countdown Timer</title>
+  <title>CS:GO Drop counter</title>
+  <link rel="icon" type="image/x-icon" href="https://steamcommunity.com/market/listings/730/CS%3AGO%20Weapon%20Case">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -61,6 +62,13 @@
       animation: countdown-fade-in 1s ease-in-out;
     }
 
+    .latest-donor {
+      font-size: 18px;
+      color: #fff;
+      margin-top: 10px;
+      animation: countdown-fade-in 1s ease-in-out;
+    }
+
     @keyframes countdown-fade-in {
       from {
         opacity: 0;
@@ -82,6 +90,11 @@
 <div class="countdown-box">
   <div class="boxed-title">Drops Reseted Since August 14, 2013</div>
   <div class="drops-reset-count" id="drops-count"></div>
+</div>
+
+<div class="countdown-box">
+  <div class="boxed-title">Latest Donor</div>
+  <div class="latest-donor" id="latest-donor"></div>
 </div>
 
 <a href="https://steamcommunity.com/tradeoffer/new/?partner=1501053483&token=_cGqGc8U" class="support-link">My Trade Link</a>
@@ -109,6 +122,16 @@ function getDropsResetCount() {
   return dropsResetCount;
 }
 
+// Function to update the latest donor information (replace with your logic)
+function updateLatestDonor() {
+  // Fetch the latest donor information or generate it dynamically
+  const latestDonorInfo = "None!"; // Replace with actual donor information
+
+  // Display the latest donor information
+  const latestDonorElement = document.getElementById('latest-donor');
+  latestDonorElement.textContent = latestDonorInfo;
+}
+
 // Function to format time in HH:MM:SS format
 function formatTime(ms) {
   const totalSeconds = Math.floor(ms / 1000);
@@ -118,9 +141,10 @@ function formatTime(ms) {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
-// Update the countdown and drops reset count every second
+// Update the countdown, drops reset count, and latest donor every second
 const countdownElement = document.getElementById('countdown');
 const dropsCountElement = document.getElementById('drops-count');
+const latestDonorElement = document.getElementById('latest-donor');
 let countdownInterval;
 
 function updateCountdown() {
@@ -139,6 +163,9 @@ function updateCountdown() {
   // Calculate and display the drops reset count
   const dropsResetCount = getDropsResetCount();
   dropsCountElement.textContent = dropsResetCount;
+
+  // Update the latest donor information
+  updateLatestDonor();
 
   // Check if the countdown is over
   if (timeRemaining <= 0) {
