@@ -33,17 +33,15 @@
       font-weight: bold;
       margin-bottom: 20px;
       color: #fff; /* White text color */
-      animation: countdown-fade-in 1s ease-in-out;
     }
 
     .support-link {
       margin-top: 20px;
       text-decoration: none;
-      color: #fff; /* White text color */
+      color: cyan; /* Cyan text color */
       font-weight: bold;
       font-size: 18px;
       display: block;
-      animation: countdown-fade-in 1s ease-in-out;
     }
 
     .boxed-title {
@@ -51,10 +49,36 @@
       font-weight: bold;
       color: yellow; /* Yellow text color */
       margin-bottom: 10px;
-      animation: countdown-fade-in 1s ease-in-out;
+    }
+
+    .image-frame {
+      margin-top: 20px;
+      opacity: 0; /* Initially hide the image */
+      animation: image-fade-in 1s ease-in-out forwards; /* Add fade-in animation */
+      cursor: pointer; /* Change cursor to pointer on hover */
+      animation: bounce 0.5s ease infinite alternate; /* Add bounce animation */
+    }
+
+    /* Bounce animation */
+    @keyframes bounce {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(-10px);
+      }
     }
 
     @keyframes countdown-fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes image-fade-in {
       from {
         opacity: 0;
       }
@@ -70,11 +94,30 @@
 <div class="countdown-box">
   <div class="boxed-title">Next Drop Reset In</div>
   <div class="countdown" id="countdown"></div>
+  <a href="https://steamcommunity.com/tradeoffer/new/?partner=1501053483&token=_cGqGc8U" class="support-link">My Trade Link</a>
 </div>
 
-<a href="https://steamcommunity.com/tradeoffer/new/?partner=1501053483&token=_cGqGc8U" class="support-link">My Trade Link</a>
+<div class="image-frame" id="image-frame">
+  <img src="https://github.com/localsteam/cs-drops/blob/main/Assest/256fx256f.png?raw=true" alt="" width="256" height="256">
+</div>
 
 <script>
+let clickCount = 0;
+const imageFrame = document.getElementById('image-frame');
+
+// Function to change image color and increment click count
+function changeImageColor() {
+  clickCount++;
+  if (clickCount === 100) {
+    imageFrame.style.filter = 'hue-rotate(180deg)'; // Change image color to cyan
+  }
+}
+
+// Add click event listener to the image
+imageFrame.addEventListener('click', function () {
+  changeImageColor();
+});
+
 // Function to calculate the time until the next Wednesday at 1:00 AM GMT
 function getTimeUntilNextWednesday() {
   const now = new Date();
@@ -118,6 +161,11 @@ updateCountdown();
 
 // Start the countdown interval
 countdownInterval = setInterval(updateCountdown, 1000);
+
+// Add a delay to start the image fade-in after a few seconds
+setTimeout(function () {
+  imageFrame.style.opacity = '1'; // Show the image
+}, 1000); // Delay the image fade-in by 1 second
 </script>
 
 </body>
