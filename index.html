@@ -90,10 +90,13 @@
 // Function to calculate the time until the next Wednesday at 1:00 AM GMT
 function getTimeUntilNextWednesday() {
   const now = new Date();
-  const currentDay = now.getUTCDay();
-  const daysUntilWednesday = (10 - currentDay + 7) % 7; // Calculate days until next Wednesday
-  const nextWednesday = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + daysUntilWednesday, 1, 0, 0, 0);
-  return nextWednesday - now;
+  const currentHour = now.getUTCHours();
+  const hoursUntil1AMGMT = (1 - currentHour + 24) % 24; // Calculate hours until 1 AM GMT
+  const minutesUntil1AMGMT = 59 - now.getUTCMinutes();
+  const secondsUntil1AMGMT = 59 - now.getUTCSeconds();
+
+  const timeUntil1AMGMT = hoursUntil1AMGMT * 3600000 + minutesUntil1AMGMT * 60000 + secondsUntil1AMGMT * 1000;
+  return timeUntil1AMGMT;
 }
 
 // Function to calculate the number of Wednesdays since August 14, 2013
@@ -123,15 +126,14 @@ let countdownInterval;
 function updateCountdown() {
   const timeRemaining = getTimeUntilNextWednesday();
 
-  // Calculate days, hours, minutes, and seconds
-  const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+  // Calculate hours, minutes, and seconds
+  const hours = Math.floor(timeRemaining / 3600000);
+  const minutes = Math.floor((timeRemaining % 3600000) / 60000);
+  const seconds = Math.floor((timeRemaining % 60000) / 1000);
 
   // Display the countdown
   countdownElement.innerHTML = `
-    ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds.
+    ${hours} hours ${minutes} minutes ${seconds} seconds.
   `;
 
   // Calculate and display the drops reset count
