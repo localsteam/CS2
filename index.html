@@ -53,32 +53,11 @@
 
     .image-frame {
       margin-top: 20px;
-      opacity: 0; /* Initially hide the image */
-      animation: image-fade-in 1s ease-in-out forwards; /* Add fade-in animation */
+      opacity: 1; /* Show the image */
       cursor: pointer; /* Change cursor to pointer on hover */
-      animation: bounce 0.5s ease infinite alternate; /* Add bounce animation */
-    }
-
-    /* Bounce animation */
-    @keyframes bounce {
-      0% {
-        transform: translateY(0);
-      }
-      100% {
-        transform: translateY(-10px);
-      }
     }
 
     @keyframes countdown-fade-in {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    @keyframes image-fade-in {
       from {
         opacity: 0;
       }
@@ -93,7 +72,7 @@
 <h1>localsteam on GitHub!</h1>
 <div class="countdown-box">
   <div class="boxed-title">Next Drop Reset In</div>
-  <div class="countdown" id="countdown"></div>
+  <div class="countdown" id="countdown">Calculating...</div>
   <a href="https://steamcommunity.com/tradeoffer/new/?partner=1501053483&token=_cGqGc8U" class="support-link">My Trade Link</a>
 </div>
 
@@ -102,71 +81,39 @@
 </div>
 
 <script>
-let clickCount = 0;
-const imageFrame = document.getElementById('image-frame');
+  const imageFrame = document.getElementById('image-frame');
+  const countdownElement = document.getElementById('countdown');
 
-// Function to change image color and increment click count
-function changeImageColor() {
-  clickCount++;
-  if (clickCount === 100) {
-    imageFrame.style.filter = 'hue-rotate(180deg)'; // Change image color to cyan
+  function updateCountdown() {
+    const now = new Date();
+    const currentDay = now.getUTCDay();
+    const daysUntilWednesday = (3 + 7 - currentDay) % 7;
+
+    // Calculate the time until the latest Wednesday at 1:00 AM GMT
+    const nextWednesday = new Date(now);
+    nextWednesday.setUTCHours(1, 0, 0, 0);
+    nextWednesday.setUTCDate(now.getUTCDate() + daysUntilWednesday);
+
+    if (now >= nextWednesday) {
+      nextWednesday.setUTCDate(nextWednesday.getUTCDate() + 7);
+    }
+
+    const timeRemaining = nextWednesday - now;
+
+    // Display the countdown
+    countdownElement.innerHTML = formatTime(timeRemaining);
   }
-}
 
-// Add click event listener to the image
-imageFrame.addEventListener('click', function () {
-  changeImageColor();
-});
-
-// Function to calculate the time until the next Wednesday at 1:00 AM GMT
-function getTimeUntilNextWednesday() {
-  const now = new Date();
-  const currentDay = now.getUTCDay(); // Get the current day (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-  const daysUntilWednesday = (3 + 7 - currentDay) % 7; // Calculate days until next Wednesday
-  const nextWednesday = new Date(now);
-  nextWednesday.setUTCDate(now.getUTCDate() + daysUntilWednesday);
-  nextWednesday.setUTCHours(1, 0, 0, 0); // Set to 1:00 AM GMT
-  const timeRemaining = nextWednesday - now;
-  return timeRemaining;
-}
-
-// Function to format time in HH:MM:SS format
-function formatTime(ms) {
-  const totalSeconds = Math.floor(ms / 1000);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  return `${hours}h ${minutes}m ${seconds}s`;
-}
-
-// Update the countdown every second
-const countdownElement = document.getElementById('countdown');
-let countdownInterval;
-
-function updateCountdown() {
-  const timeRemaining = getTimeUntilNextWednesday();
-
-  // Display the countdown
-  countdownElement.innerHTML = formatTime(timeRemaining);
-
-  // Check if the countdown is over
-  if (timeRemaining <= 0) {
-    clearInterval(countdownInterval);
-    countdownElement.innerHTML = 'Drops have been reseted!';
+  function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${hours}h ${minutes}m ${seconds}s`;
   }
-}
 
-// Initial countdown update
-updateCountdown();
-
-// Start the countdown interval
-countdownInterval = setInterval(updateCountdown, 1000);
-
-// Add a delay to start the image fade-in after a few seconds
-setTimeout(function () {
-  imageFrame.style.opacity = '1'; // Show the image
-}, 1000); // Delay the image fade-in by 1 second
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
 </script>
-
 </body>
 </html>
